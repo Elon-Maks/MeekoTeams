@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>DataPresenter</title>
+    </head>
+    <body>
+        <div>
+            <p>To sort table click on column title</p>
+            <table id = "info_table">
+                <tr>
+                    <th onclick="sortTable('date')">Date</td>
+                    <th onclick="sortTable('author')">Author</td>
+                    <th onclick="sortTable('title')">Title</td>
+                </tr>
+            </table>
+        </div>
+        <style>
+            table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            }
+        </style>
+        <script type="text/javascript" src="results.json"></script>
+        <script>
+            function loadToTable(){
+                table = document.getElementById("info_table");
+                post_data.forEach(post => {
+                let row = document.createElement("tr");
+                let date = document.createElement("td");
+                date.innerHTML = post["date"];
+                row.appendChild(date);
+                let author = document.createElement("td");
+                author.innerHTML = post["author"];
+                row.appendChild(author);
+                let title = document.createElement("td");
+                title.innerHTML = post["title"];
+                row.appendChild(title);
+                table.appendChild(row);
+            });
+            }
+            loadToTable();
+        </script>
+        <script>
+            let sort_direction = {
+                date: 1,
+                author: 1,
+                title: 1
+            };
+
+            function compareObjects(object1, object2, key) {
+                const obj1 = object1[key].toUpperCase()
+                const obj2 = object2[key].toUpperCase()
+                if (obj1 < obj2) {
+                    return -1
+                }
+                if (obj1 > obj2) {
+                    return 1
+                }
+                return 0
+            }
+            
+            function dateToNum(d) {
+                d = d.split("/"); return Number(d[2]+d[1]+d[0]);
+            }
+            function sortTable(n) {
+                let table = document.getElementById("info_table");
+                let count = table.rows.length;
+                if (n=='date'){
+                    post_data.sort((post1, post2) => {
+                    return sort_direction[n]*dateToNum(post1['date']) - dateToNum(post2['date']);
+                })
+                }
+                else{
+                    post_data.sort((post1, post2) => {
+                    return sort_direction[n]*compareObjects(post1, post2, n)
+                })
+                }
+                
+                for (i = 1; i < count; i++){
+                    table.deleteRow(1);
+                }
+                loadToTable();
+                sort_direction[n] = sort_direction[n]*-1;
+                }    
+        </script>
+    </body>
+</html>

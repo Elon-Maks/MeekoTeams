@@ -20,4 +20,5 @@ print(results)
 
 #open json file to save results
 f = open("results.json", "w")
-json.dump(results, f)
+f.write("post_data = ")
+json.dumps(results)
